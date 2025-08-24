@@ -1,5 +1,5 @@
-import { createStudent } from "../data/studentsData.js";
-import { createAlert } from "../utils/utils.js";
+import { createStudent, getFromStorage } from "../data/studentsData.js";
+import { createAlert, timeAgo } from "../utils/utils.js";
 
 document.getElementById('student-create-form').addEventListener('submit', (e) => {
     e.preventDefault();
@@ -18,4 +18,34 @@ document.getElementById('student-create-form').addEventListener('submit', (e) =>
 
     e.target.reset();
     document.querySelector('.btn-close').click();
+    getAllStudents();
 });
+
+function getAllStudents() {
+    const students = getFromStorage();
+    let studentDataListHTML = '';
+
+    students.forEach((student, index) => {
+        studentDataListHTML += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${student.name}</td>
+                <td>${student.roll}</td>
+                <td>${student.reg}</td>
+                <td>${student.board}</td>
+                <td>${timeAgo(student.createdAt)}</td>
+                <td>
+                    <button class="btn btn-sm btn-info">Add Result</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
+                    <button class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                </td>
+            </tr>
+        `
+    });
+    
+    document.getElementById('student-data-list').innerHTML = studentDataListHTML;
+};
+getAllStudents();
