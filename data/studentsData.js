@@ -2,7 +2,7 @@ import { createID } from "../utils/utils.js";
 
 let data = [];
 
-function saveToStorage() {
+export function saveToStorage(data) {
     localStorage.setItem('students', JSON.stringify(data));
 }
 
@@ -29,5 +29,5 @@ export function createStudent(studentData) {
         result: null,
     })
 
-    saveToStorage();
+    saveToStorage(data);
 }
