@@ -10,7 +10,7 @@ export function getFromStorage() {
     let storedData = [];
 
     // check old dta exists or not
-    if(localStorage.getItem('students')){
+    if (localStorage.getItem('students')) {
         storedData = JSON.parse(localStorage.getItem('students'))
     };
 
@@ -30,4 +30,27 @@ export function createStudent(studentData) {
     })
 
     saveToStorage(data);
+}
+
+export function uptateStudentData(studentsData, resultData) {
+    const update = studentsData.map(item => {
+        if (item.id === resultData.id) {
+            return {
+                ...item,
+                updatedAt: Date.now(),
+                result: {
+                    bangla: +resultData.bangla,
+                    english: +resultData.english,
+                    math: +resultData.math,
+                    science: +resultData.science,
+                    social: +resultData.social,
+                    religion: +resultData.religion,
+                }
+            }
+        } else {
+            return item;
+        }
+    });
+
+    return update;
 }
