@@ -29,7 +29,7 @@ studentResultForm.addEventListener('submit', (e) => {
 
     const studentsData = getFromStorage();
 
-    if(!resultData.bangla || !resultData.english || !resultData.math || !resultData.science || !resultData.social || !resultData.religion) {
+    if (!resultData.bangla || !resultData.english || !resultData.math || !resultData.science || !resultData.social || !resultData.religion) {
         document.querySelector('.msg-result').innerHTML = createAlert('All fields are required');
     } else {
         const uptateLocalStorage = uptateStudentData(studentsData, resultData)
@@ -41,11 +41,38 @@ studentResultForm.addEventListener('submit', (e) => {
 
 });
 
+function openResultModalFor(studentId) {
+    studentResultForm.reset();
+    document.querySelector('.msg-result').innerHTML = '';
+
+    studentResultForm.querySelector('input[name="id"]').value = studentId;
+
+    const studentsData = getFromStorage();
+    const matchingStudent = studentsData.find(student => student.id === studentId);
+
+    if (matchingStudent && matchingStudent.result) {
+        studentResultForm.querySelector('input[name="bangla"]').value = matchingStudent.result.bangla;
+        studentResultForm.querySelector('input[name="english"]').value = matchingStudent.result.english;
+        studentResultForm.querySelector('input[name="math"]').value = matchingStudent.result.math;
+        studentResultForm.querySelector('input[name="science"]').value = matchingStudent.result.science;
+        studentResultForm.querySelector('input[name="social"]').value = matchingStudent.result.social;
+        studentResultForm.querySelector('input[name="religion"]').value = matchingStudent.result.religion;
+    }
+
+    const modalEl = document.getElementById('student-result-form');
+
+    if (modalEl) {
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+
+}
+
 function getAllStudents() {
     const students = getFromStorage();
     let studentDataListHTML = '';
 
-    students.forEach((student, index) => {
+    students.reverse().forEach((student, index) => {
         studentDataListHTML += `
             <tr>
                 <td>${index + 1}</td>
@@ -57,7 +84,7 @@ function getAllStudents() {
                 <td>
                     ${student.result
                 ?
-                '<button class="btn btn-sm btn-success">View Result</button>'
+                `<button class="btn btn-sm btn-success js-view-result" data-student-id="${student.id}">View Result</button>`
                 :
                 `<button class="btn btn-sm btn-info js-add-result" data-bs-toggle="modal" data-bs-target="#student-result-form" data-student-id="${student.id}">Add Result</button>`}
                 </td>
@@ -77,6 +104,13 @@ function getAllStudents() {
             const studentId = button.dataset.studentId;
             studentResultForm.querySelector('input[name="id"]').value = studentId;
         });
-    })
+    });
+
+    document.querySelectorAll('.js-view-result').forEach((button) => {
+        button.addEventListener('click', () => {
+            const studentId = button.dataset.studentId;
+            openResultModalFor(studentId)
+        });
+    });
 };
 getAllStudents();
