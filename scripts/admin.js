@@ -117,15 +117,26 @@ function getAllStudents() {
 
     document.querySelectorAll('.js-add-result').forEach((button) => {
         button.addEventListener('click', () => {
+            studentResultForm.reset();
             const studentId = button.dataset.studentId;
             studentResultForm.querySelector('input[name="id"]').value = studentId;
+            // restore modal title & submit button
+            const modalTitle = document.getElementById('stu-result');
+            const submitBtn = document.getElementById('stu-submit');
+            if (modalTitle) modalTitle.innerText = 'Create Student Result';
+            if (submitBtn) submitBtn.innerText = 'Create';
         });
     });
 
     document.querySelectorAll('.js-view-result').forEach((button) => {
         button.addEventListener('click', () => {
             const studentId = button.dataset.studentId;
-            openResultModalFor(studentId)
+            openResultModalFor(studentId);
+            // restore modal title & submit button
+            const modalTitle = document.getElementById('stu-result');
+            const submitBtn = document.getElementById('stu-submit');
+            if (modalTitle) modalTitle.innerText = 'Edit Student Result';
+            if (submitBtn) submitBtn.innerText = 'Update';
         });
     });
 
