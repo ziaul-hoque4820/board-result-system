@@ -32,6 +32,44 @@ export function createStudent(studentData) {
     saveToStorage(data);
 }
 
+export function updateStudentInfo(updatedStudent) {
+    const students = getFromStorage();
+
+    const updated = students.map(item => {
+        if (item.id === updatedStudent.id) {
+            return {
+                ...item,
+                name: updatedStudent.name,
+                father: updatedStudent.father,
+                mother: updatedStudent.mother,
+                dob: updatedStudent.dob,
+                roll: updatedStudent.roll,
+                reg: updatedStudent.reg,
+                inst: updatedStudent.inst,
+                board: updatedStudent.board,
+                year: updatedStudent.year,
+                exam: updatedStudent.exam,
+                group: updatedStudent.group,
+                type: updatedStudent.type,
+                updatedAt: Date.now(),
+                // preserve existing result if any (we didn't touch it)
+            }
+        } else {
+            return item;
+        }
+    });
+
+    saveToStorage(updated);
+    return updated;
+}
+
+export function deleteStudentById(id) {
+    const students = getFromStorage();
+    const filtered = students.filter(item => item.id !== id);
+    saveToStorage(filtered);
+    return filtered;
+}
+
 export function uptateStudentData(studentsData, resultData) {
     const update = studentsData.map(item => {
         if (item.id === resultData.id) {

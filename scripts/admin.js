@@ -1,4 +1,4 @@
-import { createStudent, getFromStorage, saveToStorage, uptateStudentData } from "../data/studentsData.js";
+import { createStudent, getFromStorage, saveToStorage, uptateStudentData, updateStudentInfo, deleteStudentById } from "../data/studentsData.js";
 import { createAlert, timeAgo } from "../utils/utils.js";
 
 document.getElementById('student-create-form').addEventListener('submit', (e) => {
@@ -10,13 +10,29 @@ document.getElementById('student-create-form').addEventListener('submit', (e) =>
     // form validation ‍- create student and save to localStorage
     if (!studentData.name || !studentData.father || !studentData.mother || !studentData.dob || !studentData.roll || !studentData.reg || !studentData.inst || !studentData.board || !studentData.year || !studentData.exam || !studentData.group || !studentData.type) {
         document.querySelector('.msg').innerHTML = createAlert('All fields are required');
-    } else {
-        createStudent(studentData);
+        return;
+    }
+
+    if (studentData.id) {
+        // update existing student
+        updateStudentInfo(studentData);
         e.target.reset();
         document.querySelector('#student-create .btn-close').click();
-        getAllStudents();
-    };
 
+        // restore modal title & submit button
+        const modalTitle = document.getElementById('student-modal-title');
+        const submitBtn = document.getElementById('student-create-submit');
+        if (modalTitle) modalTitle.innerText = 'Create new Student';
+        if (submitBtn) submitBtn.innerText = 'Create';
+
+        getAllStudents();
+        return;
+    }
+
+    createStudent(studentData);
+    e.target.reset();
+    document.querySelector('#student-create .btn-close').click();
+    getAllStudents();
 });
 
 let studentResultForm = document.getElementById('student-result-form-data');
@@ -90,8 +106,8 @@ function getAllStudents() {
                 </td>
                 <td>
                     <button class="btn btn-sm btn-info"><i class="fa fa-eye"></i></button>
-                    <button class="btn btn-sm btn-warning"><i class="fa fa-edit"></i></button>
-                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-sm btn-warning js-edit" data-student-id="${student.id}" data-bs-toggle="modal" data-bs-target="#student-create"><i class="fa fa-edit"></i></button>
+                    <button class="btn btn-sm btn-danger js-delete" data-student-id="${student.id}"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
         `
@@ -112,5 +128,77 @@ function getAllStudents() {
             openResultModalFor(studentId)
         });
     });
+
+    document.querySelectorAll('.js-edit').forEach((button) => {
+        button.addEventListener('click', () => {
+            const studentId = button.dataset.studentId;
+            const students = getFromStorage();
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            const form = document.getElementById('student-create-form');
+            // fill inputs (check existence before assigning)
+            form.querySelector('input[name="id"]').value = student.id || '';
+            form.querySelector('input[name="name"]').value = student.name || '';
+            form.querySelector('input[name="father"]').value = student.father || '';
+            form.querySelector('input[name="mother"]').value = student.mother || '';
+            form.querySelector('input[name="dob"]').value = student.dob || '';
+            form.querySelector('input[name="roll"]').value = student.roll || '';
+            form.querySelector('input[name="reg"]').value = student.reg || '';
+            form.querySelector('select[name="inst"]').value = student.inst || '';
+            form.querySelector('select[name="board"]').value = student.board || '';
+            form.querySelector('select[name="year"]').value = student.year || '';
+            form.querySelector('select[name="exam"]').value = student.exam || '';
+
+            // radio group fields
+            const groupRadio = form.querySelectorAll('input[name="group"]');
+            groupRadio.forEach(r => r.checked = (r.value === student.group));
+            const typeRadio = form.querySelectorAll('input[name="type"]');
+            typeRadio.forEach(r => r.checked = (r.value === student.type));
+
+            // change modal title & submit button text
+            const modalTitle = document.getElementById('student-modal-title');
+            const submitBtn = document.getElementById('student-create-submit');
+            if (modalTitle) modalTitle.innerText = 'Edit Student';
+            if (submitBtn) submitBtn.innerText = 'Update';
+
+            // show modal programmatically as fallback (button also has data-bs attrs)
+            const modalEl = document.getElementById('student-create');
+            if (modalEl) {
+                const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        });
+    });
+
+    // DELETE button
+    document.querySelectorAll('.js-delete').forEach((button) => {
+        button.addEventListener('click', () => {
+            const studentId = button.dataset.studentId;
+            if (!studentId) return;
+
+            // confirmation
+            const ok = confirm('Are you sure you want to delete this student? This action cannot be undone.');
+            if (!ok) return;
+
+            deleteStudentById(studentId);
+            getAllStudents();
+        });
+    });
+};
+
+// when create-modal hides, reset form and messages & restore texts
+const createModalEl = document.getElementById('student-create');
+if (createModalEl) {
+    createModalEl.addEventListener('hidden.bs.modal', () => {
+        const form = document.getElementById('student-create-form');
+        form.reset();
+        form.querySelector('input[name="id"]').value = '';
+        document.querySelector('.msg').innerHTML = '';
+        const modalTitle = document.getElementById('student-modal-title');
+        const submitBtn = document.getElementById('student-create-submit');
+        if (modalTitle) modalTitle.innerText = 'Create new Student';
+        if (submitBtn) submitBtn.innerText = 'Create';
+    })
 };
 getAllStudents();
