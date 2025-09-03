@@ -54,3 +54,7 @@ export const timeAgo = (timestamp) => {
     }
     return Math.floor(seconds) + " seconds ago";
 };
+
+export const getRandomNumber = () => {
+    return Math.floor(Math.random() * 9) +1;
+};
