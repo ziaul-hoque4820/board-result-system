@@ -37,7 +37,8 @@ resultSearchForm.addEventListener('submit', (e) => {
         ));
         
         if(searchData) {
-            window.location.href = "result.html";
+            localStorage.setItem('searchData', JSON.stringify(searchData));
+            window.location.href = "/result.html";
         } else {
             alert('No result found')
         }
