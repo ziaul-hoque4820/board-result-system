@@ -38,7 +38,7 @@ resultSearchForm.addEventListener('submit', (e) => {
         
         if(searchData) {
             localStorage.setItem('searchData', JSON.stringify(searchData));
-            window.location.href = "./result.html";
+            window.location.href = "https://ziaul-hoque4820.github.io/board-result-system/result.html";
         } else {
             alert('No result found')
         }

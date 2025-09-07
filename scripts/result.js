@@ -6,7 +6,7 @@ const geradSheet = document.getElementById('gread-sheet');
 const searchData = JSON.parse(localStorage.getItem("searchData"));
 
 if(!searchData) {
-    window.location.href = "./index.html"
+    window.location.href = "https://ziaul-hoque4820.github.io/board-result-system/"
 };
 
 const stuResult = resultSystemPro({
