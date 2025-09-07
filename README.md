@@ -18,7 +18,7 @@ Users can add, edit, update, or delete student data from the admin section.
 - Shows alert if no matching data is found  
 
 ## Live Demo
-[**View Live Project**]()
+[**View Live Project**](https://ziaul-hoque4820.github.io/board-result-system/)
 
 ## Video Demo
 Watch the project demo video below: 
