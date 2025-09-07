@@ -121,4 +121,4 @@ geradSheet.innerHTML = `
 document.getElementById('search-again').addEventListener('click', () =>{
     localStorage.removeItem('searchData');
     window.location.href = 'index.html';
-})
+});

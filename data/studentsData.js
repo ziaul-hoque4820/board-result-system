@@ -17,6 +17,7 @@ export function getFromStorage() {
     return storedData;
 }
 
+// Create Student Info 
 export function createStudent(studentData) {
     data = getFromStorage();
 
@@ -32,6 +33,7 @@ export function createStudent(studentData) {
     saveToStorage(data);
 }
 
+// Update Student Info 
 export function updateStudentInfo(updatedStudent) {
     const students = getFromStorage();
 
@@ -63,6 +65,7 @@ export function updateStudentInfo(updatedStudent) {
     return updated;
 }
 
+// Delete Student from LocalStorage 
 export function deleteStudentById(id) {
     const students = getFromStorage();
     const filtered = students.filter(item => item.id !== id);
@@ -70,7 +73,10 @@ export function deleteStudentById(id) {
     return filtered;
 }
 
-export function uptateStudentData(studentsData, resultData) {
+// Update or Inpur Student Result 
+export function uptateStudentData(resultData) {
+    const studentsData = getFromStorage();
+
     const update = studentsData.map(item => {
         if (item.id === resultData.id) {
             return {

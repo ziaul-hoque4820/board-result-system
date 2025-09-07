@@ -1,7 +1,12 @@
 import { createStudent, getFromStorage, saveToStorage, uptateStudentData, updateStudentInfo, deleteStudentById } from "../data/studentsData.js";
 import { createAlert, timeAgo } from "../utils/utils.js";
 
-document.getElementById('student-create-form').addEventListener('submit', (e) => {
+let studentResultForm = document.getElementById('student-result-form-data');
+let studentCreateForm = document.getElementById('student-create-form');
+let resultMsg = document.querySelector('.msg-result');
+
+// Create Student Event Listenet 
+studentCreateForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
@@ -13,6 +18,7 @@ document.getElementById('student-create-form').addEventListener('submit', (e) =>
         return;
     }
 
+    // Update student Data 
     if (studentData.id) {
         // update existing student
         updateStudentInfo(studentData);
@@ -35,32 +41,26 @@ document.getElementById('student-create-form').addEventListener('submit', (e) =>
     getAllStudents();
 });
 
-let studentResultForm = document.getElementById('student-result-form-data');
-
+// Update Student Restlt 
 studentResultForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const formData = new FormData(e.target);
     const resultData = Object.fromEntries(formData.entries());
 
-    const studentsData = getFromStorage();
-
     if (!resultData.bangla || !resultData.english || !resultData.math || !resultData.science || !resultData.social || !resultData.religion) {
-        document.querySelector('.msg-result').innerHTML = createAlert('All fields are required');
+        resultMsg.innerHTML = createAlert('All fields are required');
     } else {
-        const uptateLocalStorage = uptateStudentData(studentsData, resultData)
+        const uptateLocalStorage = uptateStudentData(resultData)
         saveToStorage(uptateLocalStorage);
         e.target.reset();
         document.querySelector('#student-result-form .btn-close').click();
         getAllStudents();
     }
-
 });
 
-function openResultModalFor(studentId) {
-    studentResultForm.reset();
-    document.querySelector('.msg-result').innerHTML = '';
-
+// Student Restlt Edit and Update 
+function openResultModalForUpdate(studentId) {
     studentResultForm.querySelector('input[name="id"]').value = studentId;
 
     const studentsData = getFromStorage();
@@ -82,7 +82,7 @@ function openResultModalFor(studentId) {
         modal.show();
     }
 
-}
+};
 
 function getAllStudents() {
     const students = getFromStorage();
@@ -115,6 +115,7 @@ function getAllStudents() {
 
     document.getElementById('student-data-list').innerHTML = studentDataListHTML;
 
+    // Add Result Listener 
     document.querySelectorAll('.js-add-result').forEach((button) => {
         button.addEventListener('click', () => {
             studentResultForm.reset();
@@ -128,10 +129,13 @@ function getAllStudents() {
         });
     });
 
+    // View Result Listener 
     document.querySelectorAll('.js-view-result').forEach((button) => {
         button.addEventListener('click', () => {
+            studentResultForm.reset();
+            document.querySelector('.msg-result').innerHTML = '';
             const studentId = button.dataset.studentId;
-            openResultModalFor(studentId);
+            openResultModalForUpdate(studentId);
             // restore modal title & submit button
             const modalTitle = document.getElementById('stu-result');
             const submitBtn = document.getElementById('stu-submit');
@@ -140,6 +144,7 @@ function getAllStudents() {
         });
     });
 
+    // Student Data Edit 
     document.querySelectorAll('.js-edit').forEach((button) => {
         button.addEventListener('click', () => {
             const studentId = button.dataset.studentId;
@@ -147,24 +152,22 @@ function getAllStudents() {
             const student = students.find(s => s.id === studentId);
             if (!student) return;
 
-            const form = document.getElementById('student-create-form');
-            // fill inputs (check existence before assigning)
-            form.querySelector('input[name="id"]').value = student.id || '';
-            form.querySelector('input[name="name"]').value = student.name || '';
-            form.querySelector('input[name="father"]').value = student.father || '';
-            form.querySelector('input[name="mother"]').value = student.mother || '';
-            form.querySelector('input[name="dob"]').value = student.dob || '';
-            form.querySelector('input[name="roll"]').value = student.roll || '';
-            form.querySelector('input[name="reg"]').value = student.reg || '';
-            form.querySelector('select[name="inst"]').value = student.inst || '';
-            form.querySelector('select[name="board"]').value = student.board || '';
-            form.querySelector('select[name="year"]').value = student.year || '';
-            form.querySelector('select[name="exam"]').value = student.exam || '';
+            studentCreateForm.querySelector('input[name="id"]').value = student.id || '';
+            studentCreateForm.querySelector('input[name="name"]').value = student.name || '';
+            studentCreateForm.querySelector('input[name="father"]').value = student.father || '';
+            studentCreateForm.querySelector('input[name="mother"]').value = student.mother || '';
+            studentCreateForm.querySelector('input[name="dob"]').value = student.dob || '';
+            studentCreateForm.querySelector('input[name="roll"]').value = student.roll || '';
+            studentCreateForm.querySelector('input[name="reg"]').value = student.reg || '';
+            studentCreateForm.querySelector('input[name="inst"]').value = student.inst || '';
+            studentCreateForm.querySelector('select[name="board"]').value = student.board || '';
+            studentCreateForm.querySelector('select[name="year"]').value = student.year || '';
+            studentCreateForm.querySelector('select[name="exam"]').value = student.exam || '';
 
             // radio group fields
-            const groupRadio = form.querySelectorAll('input[name="group"]');
+            const groupRadio = studentCreateForm.querySelectorAll('input[name="group"]');
             groupRadio.forEach(r => r.checked = (r.value === student.group));
-            const typeRadio = form.querySelectorAll('input[name="type"]');
+            const typeRadio = studentCreateForm.querySelectorAll('input[name="type"]');
             typeRadio.forEach(r => r.checked = (r.value === student.type));
 
             // change modal title & submit button text
@@ -202,9 +205,8 @@ function getAllStudents() {
 const createModalEl = document.getElementById('student-create');
 if (createModalEl) {
     createModalEl.addEventListener('hidden.bs.modal', () => {
-        const form = document.getElementById('student-create-form');
-        form.reset();
-        form.querySelector('input[name="id"]').value = '';
+        studentCreateForm.reset();
+        studentCreateForm.querySelector('input[name="id"]').value = '';
         document.querySelector('.msg').innerHTML = '';
         const modalTitle = document.getElementById('student-modal-title');
         const submitBtn = document.getElementById('student-create-submit');
