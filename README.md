@@ -1,14 +1,13 @@
-# Board Result System
+# Board Result System: A Modern Approach to Result Management 👨‍🎓
 
-## Project Overview
-The **Board Result System** is a clone project inspired by the official SSC/HSC result viewing website in our country. It simulates the process of checking board exam results using locally stored student data. Since no real student data is available, mock data is created and stored in the browser's local storage. Users can add, edit, update, or delete student data, and when a user searches for a result, the system will show the full result sheet if a matching record is found. Otherwise, it will display an alert saying "Data not matched".
+## Project Overview 💡
+Welcome to the **Board Result System**! This project is a streamlined, interactive clone of our country's official SSC/HSC result portal. It's designed to showcase a modern approach to managing and displaying student results using **local browser storage**. We've created a dynamic system that allows you to add, edit, and delete mock student data, then search for and view a complete result sheet.
 
-### Important Note
-Before searching for results, **you must create student data first**.  
-- Without creating data, the result search will not work.  
-- After adding student data, you can search using the given student information.  
+Since there's no real student data involved, the system uses **locally stored mock data**, giving you a safe environment to explore its functionalities. This means you have full control!
 
-Users can add, edit, update, or delete student data from the admin section.
+***Before you search for a result, remember to create student data first!***
+
+---
 
 ## Features
 - Create and store student data in local storage  
@@ -22,6 +21,7 @@ Users can add, edit, update, or delete student data from the admin section.
 
 ## Video Demo
 Watch the project demo video below: 
+[![Watch the project video](./assets/images/video-img.PNG)](https://streamable.com/karp16)
 
 ## Getting Started
 
